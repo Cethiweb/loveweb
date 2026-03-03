@@ -206,7 +206,7 @@ button{
 
 </div>
 
-<audio id="bgMusic" loop>
+<audio id="bgMusic" autoplay loop muted playsinline>
     <source src="musik.mp3" type="audio/mp3">
 </audio>
 
@@ -306,7 +306,23 @@ window.addEventListener("scroll", ()=>{
     document.querySelector(".video-bg").style.transform =
         "scale(1.1) translateY(" + scrollY * 0.2 + "px)";
 });
+    const music = document.getElementById("bg-music");
+
+document.addEventListener("click", () => {
+    music.muted = false;
+    music.volume = 0;
+    music.play();
+
+    let fade = setInterval(()=>{
+        if(music.volume < 1){
+            music.volume += 0.05;
+        } else {
+            clearInterval(fade);
+        }
+    },200);
+}, { once: true });
 </script>
 
 </body>
 </html>
+
