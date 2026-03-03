@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cethi 💕 Sevia</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+    font-family:'Poppins',sans-serif;
+    color:white;
+    overflow-x:hidden;
+}
+
+/* 🎥 BACKGROUND VIDEO */
+.video-bg{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    filter:blur(8px) brightness(0.6);
+    z-index:-1;
+}
+
+/* CONTENT */
+.container{
+    padding:25px;
+}
+
+/* GLASS CARD */
+.card{
+    background:rgba(255,255,255,0.15);
+    backdrop-filter:blur(15px);
+    border-radius:25px;
+    padding:25px;
+    text-align:center;
+    margin-bottom:40px;
+    opacity:0;
+    transform:translateY(40px);
+    transition:all 1.2s ease;
+}
+
+.card.show{
+    opacity:1;
+    transform:translateY(0);
+}
+
+h1{
+    font-family:'Playfair Display',serif;
+    font-size:24px;
+    margin-bottom:5px;
+}
+
+.counter{
+    font-size:14px;
+    margin-bottom:15px;
+}
+
+/* BUTTON */
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:30px;
+    margin-bottom:10px;
+    font-size:14px;
+    cursor:pointer;
+    background:#ff4da6;
+    color:white;
+}
+
+/* 📱 SWIPE GALLERY */
+.gallery{
+    display:flex;
+    overflow-x:auto;
+    scroll-snap-type:x mandatory;
+    gap:15px;
+    padding-bottom:10px;
+}
+
+.gallery::-webkit-scrollbar{
+    display:none;
+}
+
+.gallery img{
+    flex:0 0 80%;
+    height:220px;
+    object-fit:cover;
+    border-radius:20px;
+    scroll-snap-align:center;
+}
+
+/* SECTION SPACING */
+.section{
+    margin-bottom:60px;
+}
+
+/* LOVE LETTER */
+.love-letter{
+    font-size:16px;
+    line-height:1.6;
+}
+</style>
+</head>
+
+<body>
+
+<!-- 🎥 Background Video -->
+<video class="video-bg" autoplay muted loop>
+    <source src="background.mp4" type="video/mp4">
+</video>
+
+<div class="container">
+
+    <!-- HERO -->
+    <div class="card section">
+        <h1>Cethi 💕 Sevia</h1>
+        <div class="counter" id="counter"></div>
+        <button onclick="playMusic()">Play Our Song 🎵</button>
+    </div>
+
+    <!-- SWIPE GALLERY -->
+    <div class="card section">
+        <h1>Our Moments</h1>
+        <div class="gallery">
+            <img src="foto1.jpg">
+            <img src="foto2.jpg">
+            <img src="foto3.jpg">
+            <img src="foto4.jpg">
+        </div>
+    </div>
+
+    <!-- LOVE LETTER -->
+    <div class="card section">
+        <h1>Love Letter 💌</h1>
+        <div class="love-letter">
+            Sevia, sejak 08 Agustus 2021 hidupku berubah menjadi lebih indah.  
+            Terima kasih sudah menjadi rumah ternyamanku.  
+            Aku ingin terus bersamamu sampai tua nanti ❤️
+        </div>
+    </div>
+
+</div>
+
+<audio id="bgMusic" loop>
+    <source src="musik.mp3" type="audio/mp3">
+</audio>
+
+<script>
+// 🎵 MUSIC
+function playMusic(){
+    document.getElementById("bgMusic").play();
+}
+
+// 💕 ANNIVERSARY COUNTER
+const startDate=new Date("2021-08-08");
+const now=new Date();
+let years=now.getFullYear()-startDate.getFullYear();
+let months=now.getMonth()-startDate.getMonth();
+let days=now.getDate()-startDate.getDate();
+
+if(days<0){ months--; days+=30; }
+if(months<0){ years--; months+=12; }
+
+document.getElementById("counter").innerHTML=
+`${years} Tahun ${months} Bulan ${days} Hari Bersama 💕`;
+
+// 🎬 CINEMATIC SCROLL FADE
+const cards=document.querySelectorAll(".card");
+
+const observer=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+        if(entry.isIntersecting){
+            entry.target.classList.add("show");
+        }
+    });
+},{threshold:0.2});
+
+cards.forEach(card=>{
+    observer.observe(card);
+});
+</script>
+
+</body>
+</html>
