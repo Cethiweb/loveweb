@@ -106,6 +106,60 @@ button{
     font-size:16px;
     line-height:1.6;
 }
+.gallery-wrapper{
+    position:relative;
+}
+
+.dots{
+    display:flex;
+    justify-content:center;
+    margin-top:10px;
+    gap:6px;
+}
+
+.dots span{
+    width:8px;
+    height:8px;
+    background:rgba(255,255,255,0.5);
+    border-radius:50%;
+    transition:0.3s;
+}
+
+.dots span.active{
+    background:white;
+    width:18px;
+    border-radius:10px;
+}
+/* 💗 DOUBLE TAP LOVE */
+.love-anim{
+    position:absolute;
+    font-size:60px;
+    color:white;
+    animation:popLove 1s ease forwards;
+    pointer-events:none;
+}
+
+@keyframes popLove{
+    0%{transform:scale(0.5);opacity:0;}
+    50%{transform:scale(1.2);opacity:1;}
+    100%{transform:scale(1);opacity:0;}
+}
+
+/* 📸 ZOOM FOTO AKTIF */
+.gallery img{
+    transition:transform 0.6s ease, opacity 0.6s ease;
+    opacity:0.6;
+}
+
+.gallery img.active{
+    transform:scale(1.05);
+    opacity:1;
+}
+
+/* 🎥 PARALLAX EFFECT */
+.video-bg{
+    transition:transform 0.2s linear;
+}
 </style>
 </head>
 
@@ -128,12 +182,16 @@ button{
     <!-- SWIPE GALLERY -->
     <div class="card section">
         <h1>Our Moments</h1>
-        <div class="gallery">
-            <img src="foto1.jpg">
-            <img src="foto2.jpg">
-            <img src="foto3.jpg">
-            <img src="foto4.jpg">
-        </div>
+        <div class="gallery-wrapper">
+    <div class="gallery" id="gallery">
+        <img src="foto1.jpg">
+        <img src="foto2.jpg">
+        <img src="foto3.jpg">
+        <img src="foto4.jpg">
+    </div>
+
+    <div class="dots" id="dots"></div>
+</div>
     </div>
 
     <!-- LOVE LETTER -->
@@ -184,6 +242,69 @@ const observer=new IntersectionObserver(entries=>{
 
 cards.forEach(card=>{
     observer.observe(card);
+});
+// 📸 INSTAGRAM DOTS INDICATOR
+const gallery = document.getElementById("gallery");
+const images = gallery.querySelectorAll("img");
+const dotsContainer = document.getElementById("dots");
+
+images.forEach((_, index) => {
+    const dot = document.createElement("span");
+    if(index === 0) dot.classList.add("active");
+    dotsContainer.appendChild(dot);
+});
+
+const dots = dotsContainer.querySelectorAll("span");
+
+gallery.addEventListener("scroll", () => {
+    const scrollLeft = gallery.scrollLeft;
+    const width = gallery.clientWidth * 0.8 + 15;
+    const index = Math.round(scrollLeft / width);
+
+    dots.forEach(dot => dot.classList.remove("active"));
+    if(dots[index]) dots[index].classList.add("active");
+});
+// 💗 DOUBLE TAP LOVE EFFECT
+let lastTap = 0;
+
+gallery.addEventListener("touchend", function(e){
+    const currentTime = new Date().getTime();
+    const tapLength = currentTime - lastTap;
+    
+    if(tapLength < 300 && tapLength > 0){
+        let rect = gallery.getBoundingClientRect();
+        let love = document.createElement("div");
+        love.className = "love-anim";
+        love.innerHTML = "❤️";
+        love.style.left = (e.changedTouches[0].clientX - 30) + "px";
+        love.style.top = (e.changedTouches[0].clientY - 30) + "px";
+        document.body.appendChild(love);
+        setTimeout(()=>love.remove(),1000);
+    }
+    lastTap = currentTime;
+});
+
+// 📸 AUTO ACTIVE ZOOM + DOT UPDATE
+gallery.addEventListener("scroll", ()=>{
+    const scrollLeft = gallery.scrollLeft;
+    const width = gallery.clientWidth * 0.8 + 15;
+    const index = Math.round(scrollLeft / width);
+
+    images.forEach(img=>img.classList.remove("active"));
+    if(images[index]) images[index].classList.add("active");
+
+    dots.forEach(dot=>dot.classList.remove("active"));
+    if(dots[index]) dots[index].classList.add("active");
+});
+
+// Aktifkan foto pertama saat load
+images[0].classList.add("active");
+
+// 🎥 PARALLAX BACKGROUND CINEMATIC
+window.addEventListener("scroll", ()=>{
+    const scrollY = window.scrollY;
+    document.querySelector(".video-bg").style.transform =
+        "scale(1.1) translateY(" + scrollY * 0.2 + "px)";
 });
 </script>
 
